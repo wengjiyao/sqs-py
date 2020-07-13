@@ -22,6 +22,7 @@ setup(
     version=about.VERSION,
     description="AWS SQS utility package for producing and consuming messages",
     long_description=long_description,
+    long_description_content_type='text/markdown',
     # The project's main homepage.
     url="https://github.com/hjpotter92/pysqs",
     # Author details
