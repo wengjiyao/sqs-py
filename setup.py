@@ -25,8 +25,8 @@ setup(
     # The project's main homepage.
     url="https://github.com/hjpotter92/pysqs",
     # Author details
-    author=about.author.get("name"),
-    author_email=about.author.get("email"),
+    author=about.AUTHOR.get("name"),
+    author_email=about.AUTHOR.get("email"),
     # Choose your license
     license="MIT",
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
