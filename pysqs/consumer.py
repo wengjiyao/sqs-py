@@ -14,6 +14,9 @@ pysqs_logger = logging.getLogger("pysqs")
 
 class Consumer(Base):
     __metaclass__ = ABCMeta
+    WAIT_TIME = 0
+    POLL_INTERVAL = 60
+    MAX_MESSAGES_COUNT = 1
 
     def __init__(self, queue_name: str = None, queue_url: str = None, **kwargs):
         queue = kwargs.get("queue")
@@ -26,22 +29,18 @@ class Consumer(Base):
         queue_data: Dict = {
             "name": queue_name,
             "url": queue_url,
-            "visibility_timeout": int(
-                kwargs.get("visibility_timeout", self.VISIBILITY_TIMEOUT)
-            ),
+            "visibility_timeout": kwargs.get("visibility_timeout",),
         }
         error_queue_data: Dict = {
             "name": kwargs.get("error_queue"),
             "url": kwargs.get("error_queue_url"),
-            "visibility_timeout": int(
-                kwargs.get("error_visibility_timeout", self.VISIBILITY_TIMEOUT)
-            ),
+            "visibility_timeout": kwargs.get("error_visibility_timeout"),
         }
         self._message_attribute_names: List = kwargs.get("message_attribute_names", [])
         self._attribute_names: List = kwargs.get("attribute_names", [])
         self._wait_time: int = int(kwargs.get("wait_time", self.WAIT_TIME))
         self._max_number_of_messages: int = int(
-            kwargs.get("max_number_of_messages", self.MAX_MESSAGE_COUNT)
+            kwargs.get("max_number_of_messages", self.MAX_MESSAGES_COUNT)
         )
         self._force_delete: bool = kwargs.get("force_delete", False)
         self._queue = queue or self.get_or_create_queue(queue_data, create_queue=True)
@@ -58,6 +57,7 @@ class Consumer(Base):
                 queue_url=error_queue_data.get("url"),
                 queue=self.get_or_create_queue(error_queue_data, create_queue=True),
             )
+            self._error_queue_name = self._error_queue.url.split("/")[-1]
 
     def poll_messages(self):
         while True:
@@ -108,13 +108,10 @@ class Consumer(Base):
                 except Exception as ex:
                     # need exception logtype to log stack trace
                     pysqs_logger.exception(ex)
-                    if self._error_queue_name:
+                    if self._error_queue:
                         exc_type, exc_obj, exc_tb = sys.exc_info()
                         pysqs_logger.info("Pushing exception to error queue")
-                        error_launcher = Producer(
-                            queue=self._error_queue_name, create_queue=True
-                        )
-                        error_launcher.launch_message(
+                        self._error_queue.publish(
                             {
                                 "exception_type": str(exc_type),
                                 "error_message": str(ex.args),
@@ -122,9 +119,9 @@ class Consumer(Base):
                         )
 
     def listen(self):
-        pysqs_logger.info("Listening to queue " + self._queue_name)
-        if self._error_queue_name:
-            pysqs_logger.info("Using error queue " + self._error_queue_name)
+        pysqs_logger.info(f"Listening to queue {self._queue_name}")
+        if self._error_queue:
+            pysqs_logger.info(f"Using error queue {self._error_queue_name}")
         self._start_listening()
 
     @abstractmethod

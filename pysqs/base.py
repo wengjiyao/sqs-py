@@ -9,10 +9,7 @@ pysqs_logger = logging.getLogger("pysqs")
 
 
 class Base:
-    QUEUE_VISIBILITY_TIMEOUT = 600
-    WAIT_TIME = 0
-    POLL_INTERVAL = 60
-    MAX_MESSAGES_COUNT = 1
+    QUEUE_VISIBILITY_TIMEOUT = "600"
 
     def __init__(self, **kwargs):
         aws_access_key_id = kwargs.get("aws_access_key_id")
@@ -38,7 +35,7 @@ class Base:
     def get_or_create_queue(self, queue_data: Dict, create_queue: bool = False):
         queue_url = queue_data.get("url")
         queue_name = queue_data.get("name")
-        queue_visibility = queue_data.get("visibility_timeout", self.QUEUE_VISIBILITY_TIMEOUT)
+        queue_visibility: str = queue_data.get("visibility_timeout") or self.QUEUE_VISIBILITY_TIMEOUT
         if queue_url:
             return self._sqs.Queue(queue_url)
         for q in self._sqs.queues.filter(QueueNamePrefix=queue_name):
@@ -49,7 +46,7 @@ class Base:
         if create_queue is False:
             pysqs_logger.warning("Denied creation of queue.")
             return None
-        pysqs_logger.deug(f"Creating the queue: {queue_name}")
+        pysqs_logger.debug(f"Creating the queue: {queue_name}")
         queue_attributes = {
             "VisibilityTimeout": queue_visibility,
         }

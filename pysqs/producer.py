@@ -18,9 +18,7 @@ class Producer(Base):
         queue_data: Dict = {
             "name": queue_name,
             "url": queue_url,
-            "visibility_timeout": int(
-                kwargs.get("error_visibility_timeout", self.VISIBILITY_TIMEOUT)
-            ),
+            "visibility_timeout": kwargs.get("error_visibility_timeout"),
         }
         self._queue = queue or self.get_or_create_queue(
             queue_data, create_queue=kwargs.get("create_queue"),
