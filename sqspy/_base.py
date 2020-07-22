@@ -32,17 +32,12 @@ class Base:
         )
         sqspy_logger.debug("Initialised SQS resource")
 
-    def get_or_create_queue(self, queue_data: Dict, create_queue: bool = False):
-        queue_url = queue_data.get("url")
+    def get_or_create_queue(self, queue_data: Dict, create_queue: bool = True):
         queue_name = queue_data.get("name")
         queue_visibility: str = queue_data.get("visibility_timeout") or self.QUEUE_VISIBILITY_TIMEOUT
-        if queue_url:
-            return self._sqs.Queue(queue_url)
-        for q in self._sqs.queues.filter(QueueNamePrefix=queue_name):
-            name = q.url.split("/")[-1]
-            if name == queue_name:
-                return q
-        sqspy_logger.warning("Queue not found.")
+        queue = self.get_queue(queue_data)
+        if queue is not None:
+            return queue
         if create_queue is False:
             sqspy_logger.warning("Denied creation of queue.")
             return None
@@ -53,6 +48,18 @@ class Base:
         if queue_name.endswith(".fifo"):
             queue_attributes["FifoQueue"] = "true"
         return self.create_queue(queue_name, queue_attributes)
+
+    def get_queue(self, queue_data: Dict):
+        queue_url = queue_data.get("url")
+        queue_name = queue_data.get("name")
+        if queue_url:
+            return self._sqs.Queue(queue_url)
+        for q in self._sqs.queues.filter(QueueNamePrefix=queue_name):
+            name = q.url.split("/")[-1]
+            if name == queue_name:
+                return q
+        sqspy_logger.warning("Queue not found.")
+        return None
 
     def create_queue(self, name: str, attributes: Dict):
         return self._sqs.create_queue(QueueName=name, Attributes=attributes)
