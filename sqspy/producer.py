@@ -4,7 +4,7 @@ import os
 
 from .base import Base
 
-pysqs_logger = logging.getLogger("pysqs")
+sqspy_logger = logging.getLogger("sqspy")
 
 
 class Producer(Base):
@@ -31,5 +31,5 @@ class Producer(Base):
         self._queue_name = self._queue.url.split("/")[-1]
 
     def publish(self, message, **kwargs):
-        pysqs_logger.info(f"Sending message to queue.")
+        sqspy_logger.info(f"Sending message to queue.")
         return self._queue.send_message(MessageBody=json.dumps(message), **kwargs)

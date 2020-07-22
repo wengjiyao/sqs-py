@@ -5,7 +5,7 @@ import logging
 import boto3
 import boto3.session
 
-pysqs_logger = logging.getLogger("pysqs")
+sqspy_logger = logging.getLogger("sqspy")
 
 
 class Base:
@@ -30,7 +30,7 @@ class Base:
             aws_access_key_id=aws_access_key_id,
             aws_secret_access_key=aws_secret_access_key,
         )
-        pysqs_logger.debug("Initialised SQS resource")
+        sqspy_logger.debug("Initialised SQS resource")
 
     def get_or_create_queue(self, queue_data: Dict, create_queue: bool = False):
         queue_url = queue_data.get("url")
@@ -42,11 +42,11 @@ class Base:
             name = q.url.split("/")[-1]
             if name == queue_name:
                 return q
-        pysqs_logger.warning("Queue not found.")
+        sqspy_logger.warning("Queue not found.")
         if create_queue is False:
-            pysqs_logger.warning("Denied creation of queue.")
+            sqspy_logger.warning("Denied creation of queue.")
             return None
-        pysqs_logger.debug(f"Creating the queue: {queue_name}")
+        sqspy_logger.debug(f"Creating the queue: {queue_name}")
         queue_attributes = {
             "VisibilityTimeout": queue_visibility,
         }

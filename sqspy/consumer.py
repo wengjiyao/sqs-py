@@ -9,7 +9,7 @@ import sys
 from .base import Base
 from .producer import Producer
 
-pysqs_logger = logging.getLogger("pysqs")
+sqspy_logger = logging.getLogger("sqspy")
 
 
 class Consumer(Base):
@@ -68,13 +68,13 @@ class Consumer(Base):
                 MaxNumberOfMessages=self._max_number_of_messages,
             )
             if not messages:
-                pysqs_logger.debug(
+                sqspy_logger.debug(
                     f"No messages were fetched for {self._queue_name}. "
                     f"Sleeping for {self._poll_interval} seconds."
                 )
                 sleep(self._poll_interval)
                 continue
-            pysqs_logger.info(
+            sqspy_logger.info(
                 f"{len(messages)} messages received for {self._queue_name}"
             )
             break
@@ -93,7 +93,7 @@ class Consumer(Base):
                 try:
                     body = json.loads(m_body)
                 except:
-                    pysqs_logger.warning(
+                    sqspy_logger.warning(
                         f"Unable to parse message - JSON is not formatted properly. "
                         f"Received message: {m_body}"
                     )
@@ -107,10 +107,10 @@ class Consumer(Base):
                         message.delete()
                 except Exception as ex:
                     # need exception logtype to log stack trace
-                    pysqs_logger.exception(ex)
+                    sqspy_logger.exception(ex)
                     if self._error_queue:
                         exc_type, exc_obj, exc_tb = sys.exc_info()
-                        pysqs_logger.info("Pushing exception to error queue")
+                        sqspy_logger.info("Pushing exception to error queue")
                         self._error_queue.publish(
                             {
                                 "exception_type": str(exc_type),
@@ -119,9 +119,9 @@ class Consumer(Base):
                         )
 
     def listen(self):
-        pysqs_logger.info(f"Listening to queue {self._queue_name}")
+        sqspy_logger.info(f"Listening to queue {self._queue_name}")
         if self._error_queue:
-            pysqs_logger.info(f"Using error queue {self._error_queue_name}")
+            sqspy_logger.info(f"Using error queue {self._error_queue_name}")
         self._start_listening()
 
     @abstractmethod

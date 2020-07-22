@@ -3,7 +3,7 @@ MINOR = 0
 PATCH = 1
 SUFFIX = ""
 
-NAME = "pysqs"
+NAME = "sqspy"
 
 AUTHOR = MAINTAINER = {
     "name": "hjpotter92",
