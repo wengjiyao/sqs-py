@@ -60,7 +60,7 @@ class Base:
 #                return q
 #        sqspy_logger.warning("Queue not found.")
 #        return None
-        queue = sqs.get_queue_by_name(QueueName=queue_name)
+        queue = self._sqs.get_queue_by_name(QueueName=queue_name)
         return queue
 
     def create_queue(self, name: str, attributes: Dict):
