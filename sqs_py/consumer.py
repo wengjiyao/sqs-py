@@ -9,7 +9,7 @@ import sys
 from ._base import Base
 from .producer import Producer
 
-sqspy_logger = logging.getLogger("sqspy")
+sqspy_logger = logging.getLogger("sqs_py")
 
 
 class Consumer(Base):

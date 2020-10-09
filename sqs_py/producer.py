@@ -1,10 +1,10 @@
 import json
 import logging
 import os
-
+sqs_py
 from ._base import Base
 
-sqspy_logger = logging.getLogger("sqspy")
+sqspy_logger = logging.getLogger("sqs_py")
 
 
 class Producer(Base):

@@ -3,11 +3,11 @@ MINOR = 0
 PATCH = 1
 SUFFIX = ""
 
-NAME = "sqspy"
+NAME = "sqs_py"
 
 AUTHOR = MAINTAINER = {
     "name": "wengjiyao",
-    "email": "jiyao.weng@videri.com",
+    "email": "w.j@live.ca",
 }
 
 AUTHORS = MAINTAINERS = (
