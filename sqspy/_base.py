@@ -54,12 +54,14 @@ class Base:
         queue_name = queue_data.get("name")
         if queue_url:
             return self._sqs.Queue(queue_url)
-        for q in self._sqs.queues.filter(QueueNamePrefix=queue_name):
-            name = q.url.split("/")[-1]
-            if name == queue_name:
-                return q
-        sqspy_logger.warning("Queue not found.")
-        return None
+#        for q in self._sqs.queues.filter(QueueNamePrefix=queue_name):
+#            name = q.url.split("/")[-1]
+#            if name == queue_name:
+#                return q
+#        sqspy_logger.warning("Queue not found.")
+#        return None
+        queue = sqs.get_queue_by_name(QueueName=queue_name)
+        return queue
 
     def create_queue(self, name: str, attributes: Dict):
         return self._sqs.create_queue(QueueName=name, Attributes=attributes)
