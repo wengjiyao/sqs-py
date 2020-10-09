@@ -3,7 +3,7 @@ from codecs import open
 from pathlib import Path
 from setuptools import setup, find_packages
 
-import sqspy.about as about
+import sqs_py.about as about
 
 
 here = Path.cwd()
@@ -20,7 +20,7 @@ setup(
     description="AWS SQS utility package for producing and consuming messages",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/hjpotter92/sqspy",
+    url="https://github.com/wengjiyao/sqs_py",
     author=about.AUTHOR.get("name"),
     author_email=about.AUTHOR.get("email"),
     license="MIT",
