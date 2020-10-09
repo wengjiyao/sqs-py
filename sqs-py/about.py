@@ -6,8 +6,8 @@ SUFFIX = ""
 NAME = "sqspy"
 
 AUTHOR = MAINTAINER = {
-    "name": "hjpotter92",
-    "email": "hjpotter92+pypi@gmail.com",
+    "name": "wengjiyao",
+    "email": "jiyao.weng@videri.com",
 }
 
 AUTHORS = MAINTAINERS = (
