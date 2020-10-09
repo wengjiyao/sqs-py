@@ -43,7 +43,7 @@ class Consumer(Base):
             kwargs.get("max_number_of_messages", self.MAX_MESSAGES_COUNT)
         )
         self._force_delete: bool = kwargs.get("force_delete", False)
-        self._queue = queue or self.get_or_create_queue(queue_data)
+        self._queue = queue or self.get_queue(queue_data)
         if self.queue is None:
             raise ValueError(
                 "No queue found with name or URL provided, or "
@@ -55,7 +55,7 @@ class Consumer(Base):
             self._error_queue = Producer(
                 queue_name=error_queue_data.get("name"),
                 queue_url=error_queue_data.get("url"),
-                queue=self.get_or_create_queue(error_queue_data),
+                queue=self.get_queue(error_queue_data),
             )
             self._error_queue_name = self._error_queue.url.split("/")[-1]
 
