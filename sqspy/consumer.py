@@ -57,7 +57,7 @@ class Consumer(Base):
                 queue_url=error_queue_data.get("url"),
                 queue=self.get_queue(error_queue_data),
             )
-            self._error_queue_name = self._error_queue.url.split("/")[-1]
+            self._error_queue_name = self._error_queue.queue_url.split("/")[-1]
 
     @property
     def queue(self):
