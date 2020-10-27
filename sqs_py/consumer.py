@@ -86,6 +86,11 @@ class Consumer(Base):
             sqspy_logger.info(
                 f"{len(messages)} messages received for {self.queue_name}"
             )
+            
+            # delete messages from SQS after processing
+            for message in messages:
+                message.delete()
+                
             break
         return messages
 
